@@ -1,0 +1,58 @@
+# OPTIONAL least-privilege identity for KubeScope.
+#
+# By default KubeScope uses your personal kubeconfig, which is usually far more
+# powerful than it needs (kind gives you cluster-admin; on GKE you likely have
+# broad IAM roles). KubeScope's backend enforces namespace/label restrictions
+# itself, but you can additionally run it as this ServiceAccount so the
+# *cluster* enforces them too. See scripts/make-restricted-kubeconfig.sh.
+#
+# RBAC limits: Kubernetes RBAC cannot restrict by label, so "delete pods" is
+# granted for the whole namespace. "patch deployments" is restricted by name.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubescope
+  namespace: kubescope-demo
+  labels:
+    app.kubernetes.io/part-of: kubescope-demo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kubescope
+  namespace: kubescope-demo
+  labels:
+    app.kubernetes.io/part-of: kubescope-demo
+rules:
+  # Read-only snapshots and watches.
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods", "events"]
+    verbs: ["get", "list", "watch"]
+  # Scale experiment: PATCH spec.replicas of the demo Deployment only.
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    resourceNames: ["demo-api"]
+    verbs: ["patch"]
+  # Pod recovery experiment.
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kubescope
+  namespace: kubescope-demo
+  labels:
+    app.kubernetes.io/part-of: kubescope-demo
+subjects:
+  - kind: ServiceAccount
+    name: kubescope
+    namespace: kubescope-demo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kubescope

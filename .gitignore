@@ -1,0 +1,31 @@
+# Credentials — never commit
+*.kubeconfig
+kubeconfig*
+.kube/
+*-sa-key.json
+*service-account*.json
+application_default_credentials.json
+.env
+.env.*
+!.env.example
+
+# Build output / deps
+frontend/node_modules/
+frontend/dist/
+node_modules/
+dist/
+*.tsbuildinfo
+backend/server
+backend/kubescope
+*.test
+*.out
+go.work
+go.work.sum
+
+# Local results
+smoke-results.json
+kubescope-*.json
+
+.DS_Store
+.vscode/
+.idea/

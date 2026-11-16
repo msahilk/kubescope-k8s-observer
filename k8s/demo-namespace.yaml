@@ -1,0 +1,8 @@
+# Namespace for KubeScope's demo workload. KubeScope refuses to mutate anything
+# outside the namespace configured by KUBESCOPE_NAMESPACE (default: kubescope-demo).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubescope-demo
+  labels:
+    app.kubernetes.io/part-of: kubescope-demo

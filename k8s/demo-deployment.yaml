@@ -1,0 +1,79 @@
+# Demo workload that KubeScope scales and whose Pods it deletes.
+# Every object carries app.kubernetes.io/part-of=kubescope-demo; KubeScope's
+# backend refuses to touch objects without that label.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-api
+  namespace: kubescope-demo
+  labels:
+    app: demo-api
+    app.kubernetes.io/name: demo-api
+    app.kubernetes.io/part-of: kubescope-demo
+spec:
+  replicas: 2                 # KUBESCOPE_BASELINE_REPLICAS defaults to 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: demo-api
+  template:
+    metadata:
+      labels:
+        app: demo-api
+        app.kubernetes.io/name: demo-api
+        app.kubernetes.io/part-of: kubescope-demo
+    spec:
+      terminationGracePeriodSeconds: 5    # keep Pod-deletion experiments short
+      automountServiceAccountToken: false # the demo app never calls the API
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: web
+          # Small public nginx image that runs as a non-root user on port 8080.
+          # Pinned to a version tag; for stricter reproducibility pin the digest:
+          #   docker buildx imagetools inspect nginxinc/nginx-unprivileged:1.27.3-alpine
+          image: nginxinc/nginx-unprivileged:1.27.3-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:               # "Ready" = this probe passes
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-api
+  namespace: kubescope-demo
+  labels:
+    app.kubernetes.io/part-of: kubescope-demo
+spec:
+  selector:
+    app: demo-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
