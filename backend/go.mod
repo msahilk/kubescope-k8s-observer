@@ -1,4 +1,4 @@
-module github.com/sahilkamil/kubescope/backend
+module github.com/msahilk/kubescope-k8s-observer/backend
 
 go 1.22.0
 

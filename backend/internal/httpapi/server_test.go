@@ -16,12 +16,12 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"github.com/sahilkamil/kubescope/backend/internal/config"
-	"github.com/sahilkamil/kubescope/backend/internal/experiments"
-	"github.com/sahilkamil/kubescope/backend/internal/kube"
-	"github.com/sahilkamil/kubescope/backend/internal/models"
-	"github.com/sahilkamil/kubescope/backend/internal/stream"
-	"github.com/sahilkamil/kubescope/backend/internal/testsim"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/config"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/experiments"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/kube"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/models"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/stream"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/testsim"
 )
 
 // stack wires the real server, engine, watcher and hub to a SIMULATED cluster

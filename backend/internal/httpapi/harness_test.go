@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sahilkamil/kubescope/backend/internal/config"
-	"github.com/sahilkamil/kubescope/backend/internal/experiments"
-	"github.com/sahilkamil/kubescope/backend/internal/kube"
-	"github.com/sahilkamil/kubescope/backend/internal/stream"
-	"github.com/sahilkamil/kubescope/backend/internal/testsim"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/config"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/experiments"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/kube"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/stream"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/testsim"
 )
 
 // TestUIHarness serves the API against the SIMULATED cluster for manual/UI

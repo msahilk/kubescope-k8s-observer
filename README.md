@@ -8,7 +8,7 @@ It is a **client of the standard Kubernetes API**. It is not a control plane, an
 Browser (React, :5173) ──REST + SSE──▶ Go backend (127.0.0.1:8080) ──client-go──▶ kube-apiserver (kind or GKE)
 ```
 
-> **Status:** verified end-to-end on a **real local kind cluster** (macOS, Apple Silicon, Colima): automated tests, production build, the smoke test (4 passing runs, plus 1 with a least-privilege ServiceAccount), and outage/recovery checks. **GKE has not been tested.** See [IMPLEMENTATION_NOTES.md](IMPLEMENTATION_NOTES.md) and the screenshots in [docs/screenshots](docs/screenshots/).
+> **Status:** verified end-to-end on a **real local kind cluster** (macOS, Apple Silicon, Colima): automated tests, production build, the smoke test (4 passing runs, plus 1 with a least-privilege ServiceAccount), and outage/recovery checks. **GKE:** the smoke test passed 3 times on one small zonal GKE Standard cluster; the robustness checks were not repeated there. Results are in [docs/results](docs/results/), the kind-vs-GKE comparison in [docs/BENCHMARK_KIND_VS_GKE.md](docs/BENCHMARK_KIND_VS_GKE.md), and screenshots in [docs/screenshots](docs/screenshots/).
 
 ## Prerequisites
 
@@ -17,7 +17,7 @@ Browser (React, :5173) ──REST + SSE──▶ Go backend (127.0.0.1:8080) ─
 | Go | 1.22+ | backend |
 | Node.js + npm | 20+ | dashboard |
 | Docker, kind, kubectl | recent | local cluster |
-| gcloud + `gke-gcloud-auth-plugin` | optional | GKE ([tutorial](GKE_SETUP_TUTORIAL.html)) |
+| gcloud + `gke-gcloud-auth-plugin` | optional | GKE (see [Running on GKE](#running-on-gke)) |
 
 On macOS you don't need Docker Desktop. With [Homebrew](https://brew.sh/):
 
@@ -53,6 +53,44 @@ With the backend running, `./scripts/smoke-test.sh` runs scale 2→4, 4→2 and 
 
 `backend/go.sum` and `frontend/package-lock.json` are committed, so `go mod tidy` and `npm install` just reproduce the pinned versions.
 
+## Running on GKE
+
+KubeScope works unchanged against Google Kubernetes Engine: it is the same Kubernetes API with a different `KUBESCOPE_CONTEXT`. **A GKE cluster costs money for every hour it exists** (the run in this repo used one `e2-standard-2` node, roughly $0.08/hour), so create it, run what you need, and delete it.
+
+```bash
+# one-time tools (macOS)
+brew install --cask gcloud-cli
+gcloud components install gke-gcloud-auth-plugin
+export PATH="/opt/homebrew/share/google-cloud-sdk/bin:$PATH"   # the plugin must be on PATH for kubectl and the backend
+
+gcloud auth login
+gcloud config set project YOUR_PROJECT_ID                       # a project with billing enabled
+gcloud services enable container.googleapis.com
+
+# small zonal cluster (zonal keeps the management fee inside GKE's free-tier credit)
+gcloud container clusters create kubescope-lab --zone us-central1-a --num-nodes 1 --machine-type e2-standard-2 --disk-size 30
+kubectl apply -f k8s/demo-namespace.yaml -f k8s/demo-deployment.yaml   # get-credentials ran automatically
+
+KUBESCOPE_CONTEXT="$(kubectl config current-context)" ./scripts/dev.sh   # dashboard shows a GKE badge and cost warning
+KUBESCOPE_SMOKE_ALLOW_GKE=yes ./scripts/smoke-test.sh                    # optional
+
+# clean up — do not skip
+gcloud container clusters delete kubescope-lab --zone us-central1-a
+gcloud compute disks list && gcloud compute addresses list               # should both be empty
+kubectl config use-context kind-kubescope
+```
+
+Use `--zone`, not `--region`: with `--region`, `--num-nodes` is per zone, so you get three nodes.
+
+## Benchmark: kind vs GKE
+
+`scripts/benchmark.py` runs repeated scale and Pod-deletion experiments through a running backend and breaks each one into stages (controllers, scheduler, kubelet, readiness probe). [docs/BENCHMARK_KIND_VS_GKE.md](docs/BENCHMARK_KIND_VS_GKE.md) compares 10 rounds on kind with 10 on a 1-node GKE cluster. In short: same behaviour; GKE was slower per step even with network delay removed; and on both, the readiness probe is the biggest part of the wait.
+
+```bash
+./scripts/benchmark.py run --label kind --runs 10 --out docs/benchmarks/kind.json
+./scripts/benchmark.py compare docs/benchmarks/kind.json docs/benchmarks/gke.json
+```
+
 ## Using the dashboard
 
 - **Connection**: shows context, cluster, API server, namespace, reachability, last successful refresh, live-stream state and watch errors. For a GKE context it shows a GKE badge and a cost warning. If the cluster can't be reached, KubeScope shows an error, never an empty cluster.
@@ -61,7 +99,7 @@ With the backend running, `./scripts/smoke-test.sh` runs scale 2→4, 4→2 and 
 - **Current experiment**: status, measurements (each with "What does this measure?" start/end conditions), a timestamped timeline in which **Observed** entries are marked apart from KubeScope's **Explanation** entries, caveats, and *Export JSON*.
 - **Live cluster feed**: raw watch changes and Kubernetes Events.
 - **History**: the last 20 runs, kept in backend memory. *Export all JSON* downloads them.
-- **Learn**: a short glossary, plus links to [LEARNING_GUIDE.md](LEARNING_GUIDE.md) and the [GKE tutorial](GKE_SETUP_TUTORIAL.html), which are served at `/docs/…`.
+- **Learn**: a short glossary of the Kubernetes concepts the experiments show. If you keep personal notes named `LEARNING_GUIDE.md` or `GKE_SETUP_TUTORIAL.html` in the repo root (they are git-ignored), the panel links to them, served at `/docs/…`.
 
 ## What is measured
 
@@ -136,7 +174,7 @@ To run as a single process: `cd frontend && npm run build`, then `KUBESCOPE_STAT
 
 - Unit tests cover convergence rules (including `observedGeneration` lag and spec-only false positives), safety and namespace/label enforcement, config validation, SSE sequence/replay/resync, informer restart after an outage, timeline offsets, and the experiment state machine: success, external change → interrupted, timeout, cancel, conflict, failure unlocking, Pod-UID replacement, and the no-dip case.
 - API tests run the real HTTP server, watcher and engine against client-go's **fake clientset driven by a tiny test-only simulator** (`backend/internal/testsim`). This validates KubeScope's logic and API contract. It says **nothing** about real cluster timing.
-- `scripts/smoke-test.sh` is the real-cluster integration test. It has passed on kind; see [IMPLEMENTATION_NOTES.md](IMPLEMENTATION_NOTES.md) for the measured values.
+- `scripts/smoke-test.sh` is the real-cluster integration test. It has passed on kind and on GKE; the exported runs are in [docs/results](docs/results/).
 
 ## Repository layout
 
@@ -144,8 +182,8 @@ To run as a single process: `cd frontend && npm run build`, then `KUBESCOPE_STAT
 backend/   cmd/server · internal/{config,kube,experiments,httpapi,safety,models,stream,testsim}
 frontend/  src/{App.tsx,api/,components/,styles/} · tsconfig.{app,node}.json
 k8s/       demo-namespace.yaml · demo-deployment.yaml · optional-rbac.yaml · kind-config.yaml
-scripts/   kind-up.sh · kind-down.sh · dev.sh · smoke-test.sh · test.sh · make-restricted-kubeconfig.sh
-docs/      screenshots/ (real kind screenshots) · results/ (exported smoke-test JSON)
+scripts/   kind-up.sh · kind-down.sh · dev.sh · smoke-test.sh · test.sh · make-restricted-kubeconfig.sh · benchmark.py
+docs/      BENCHMARK_KIND_VS_GKE.md · benchmarks/ · screenshots/ (real kind screenshots) · results/ (exported smoke-test JSON)
 ```
 
 Compared with the spec layout, this adds `internal/stream` (SSE hub), `internal/testsim` (test-only simulator), `k8s/kind-config.yaml`, `docs/` and the extra scripts.
@@ -156,5 +194,5 @@ Compared with the spec layout, this adds `internal/stream` (SSE hub), `internal/
 # stop the backend and the dashboard: Ctrl+C in their terminals (or Ctrl+C on scripts/dev.sh)
 ./scripts/kind-down.sh     # delete the kind cluster
 colima stop                # macOS: stop the Docker VM
-# GKE: see "Clean up immediately" in GKE_SETUP_TUTORIAL.html. Stopping KubeScope does not stop GKE billing.
+# GKE: delete the cluster (see Running on GKE). Stopping KubeScope does not stop GKE billing.
 ```

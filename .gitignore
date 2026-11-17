@@ -29,3 +29,13 @@ kubescope-*.json
 .DS_Store
 .vscode/
 .idea/
+
+# Python
+__pycache__/
+
+# Personal notes kept on this machine only (never committed)
+IMPLEMENTATION_NOTES.md
+LEARNING_GUIDE.md
+SPEC.md
+GKE_SETUP_TUTORIAL.html
+KUBESCOPE_EXPLAINED.html

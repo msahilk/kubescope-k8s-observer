@@ -15,9 +15,9 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/sahilkamil/kubescope/backend/internal/kube"
-	"github.com/sahilkamil/kubescope/backend/internal/models"
-	"github.com/sahilkamil/kubescope/backend/internal/safety"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/kube"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/models"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/safety"
 )
 
 var labels = map[string]string{"app.kubernetes.io/part-of": "kubescope-demo"}

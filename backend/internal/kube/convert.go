@@ -9,7 +9,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/sahilkamil/kubescope/backend/internal/models"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/models"
 )
 
 // Convergence is the result of evaluating a Deployment against a desired count.

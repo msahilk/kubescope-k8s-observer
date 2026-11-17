@@ -21,9 +21,9 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
-	"github.com/sahilkamil/kubescope/backend/internal/config"
-	"github.com/sahilkamil/kubescope/backend/internal/models"
-	"github.com/sahilkamil/kubescope/backend/internal/safety"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/config"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/models"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/safety"
 )
 
 // ErrNotConnected is returned when no usable client could be built.

@@ -1,18 +1,23 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// Serve the repo-root learning docs at /docs/* in dev and copy them into the
-// production build, so the Learn panel links always work.
-const DOCS: Record<string, string> = {
+// Optional local docs in the repo root (kept out of Git). When present they are
+// served at /docs/* in dev and copied into the production build; the Learn
+// panel only links to the ones that exist, so a fresh clone builds fine.
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const DOC_TYPES: Record<string, string> = {
   'LEARNING_GUIDE.md': 'text/markdown; charset=utf-8',
   'GKE_SETUP_TUTORIAL.html': 'text/html; charset=utf-8',
 };
+const DOCS: Record<string, string> = Object.fromEntries(
+  Object.entries(DOC_TYPES).filter(([name]) => existsSync(resolve(ROOT, name))),
+);
 
 function docsPlugin(): Plugin {
-  const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const root = ROOT;
   return {
     name: 'kubescope-docs',
     configureServer(server) {
@@ -36,6 +41,9 @@ function docsPlugin(): Plugin {
 
 export default defineConfig({
   plugins: [react(), docsPlugin()],
+  define: {
+    __KUBESCOPE_LOCAL_DOCS__: JSON.stringify(Object.keys(DOCS)),
+  },
   server: {
     host: '127.0.0.1',
     port: 5173,

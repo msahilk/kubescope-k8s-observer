@@ -11,6 +11,13 @@ const GLOSSARY: [string, string][] = [
   ['GKE', 'Google runs the control plane for you. KubeScope uses the same public Kubernetes API there — it has no view inside Google’s infrastructure.'],
 ];
 
+// Optional docs kept on the developer's machine, outside Git (see vite.config.ts).
+const DOC_LABELS: [string, string][] = [
+  ['LEARNING_GUIDE.md', 'Learning guide'],
+  ['GKE_SETUP_TUTORIAL.html', 'GKE setup tutorial'],
+];
+const localDocs = DOC_LABELS.filter(([file]) => __KUBESCOPE_LOCAL_DOCS__.includes(file));
+
 export function LearnPanel() {
   return (
     <section className="panel" aria-labelledby="learn-h">
@@ -23,10 +30,17 @@ export function LearnPanel() {
           </div>
         ))}
       </dl>
-      <p>
-        Read more: <a href="/docs/LEARNING_GUIDE.md" target="_blank" rel="noreferrer">Learning guide</a> ·{' '}
-        <a href="/docs/GKE_SETUP_TUTORIAL.html" target="_blank" rel="noreferrer">GKE setup tutorial</a>
-      </p>
+      {localDocs.length > 0 && (
+        <p>
+          Read more:{' '}
+          {localDocs.map(([file, label], i) => (
+            <span key={file}>
+              {i > 0 && ' · '}
+              <a href={`/docs/${file}`} target="_blank" rel="noreferrer">{label}</a>
+            </span>
+          ))}
+        </p>
+      )}
     </section>
   );
 }

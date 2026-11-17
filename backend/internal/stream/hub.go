@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sahilkamil/kubescope/backend/internal/models"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/models"
 )
 
 // Hub fans out events to subscribers.

@@ -17,12 +17,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/sahilkamil/kubescope/backend/internal/config"
-	"github.com/sahilkamil/kubescope/backend/internal/experiments"
-	"github.com/sahilkamil/kubescope/backend/internal/httpapi"
-	"github.com/sahilkamil/kubescope/backend/internal/kube"
-	"github.com/sahilkamil/kubescope/backend/internal/models"
-	"github.com/sahilkamil/kubescope/backend/internal/stream"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/config"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/experiments"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/httpapi"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/kube"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/models"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/stream"
 )
 
 func main() {

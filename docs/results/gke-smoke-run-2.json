@@ -1,0 +1,1959 @@
+{
+  "experiments": [
+    {
+      "id": "exp-20261117-031538-6",
+      "type": "delete-pod",
+      "status": "success",
+      "statusReason": "replacement Pod Ready and Deployment back to desired readiness",
+      "context": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "cluster": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "isGKE": true,
+      "target": {
+        "namespace": "kubescope-demo",
+        "deployment": "demo-api",
+        "podName": "demo-api-7767ff7fdf-zr86r",
+        "podUid": "0b7bc348-f311-4032-8775-036413edac79",
+        "replacementPod": "demo-api-7767ff7fdf-z89zf",
+        "replacementUid": "96e7eb42-d2f5-4b25-b33d-eabae74ac2a7",
+        "baselineReady": 2,
+        "baselineDesired": 2,
+        "minReadyObserved": 1
+      },
+      "createdAt": "2026-11-17T03:15:38.579434Z",
+      "requestStartedAt": "2026-11-17T03:15:38.795631Z",
+      "requestAcknowledgedAt": "2026-11-17T03:15:38.868895Z",
+      "convergedAt": "2026-11-17T03:15:44.382655Z",
+      "finishedAt": "2026-11-17T03:15:44.382664Z",
+      "timeoutSeconds": 120,
+      "measurements": [
+        {
+          "name": "api_rtt",
+          "label": "API request round-trip",
+          "valueMs": 73,
+          "start": "KubeScope sends the DELETE request",
+          "end": "KubeScope receives the API server's success response",
+          "startAt": "2026-11-17T03:15:38.795631Z",
+          "endAt": "2026-11-17T03:15:38.868895Z",
+          "description": "Client-observed latency of a single API call (network + authn/authz + admission + etcd write). It says nothing about workload readiness."
+        },
+        {
+          "name": "time_to_replacement_observed",
+          "label": "Acknowledged → replacement Pod seen",
+          "valueMs": 701,
+          "start": "DELETE acknowledged",
+          "end": "First watch observation of a Pod with a UID not present before deletion",
+          "startAt": "2026-11-17T03:15:38.868895Z",
+          "endAt": "2026-11-17T03:15:39.570341Z",
+          "description": "How long until the ReplicaSet controller's new Pod object was visible to KubeScope (not yet scheduled or running)."
+        },
+        {
+          "name": "time_to_replacement_ready",
+          "label": "Acknowledged → replacement Ready",
+          "valueMs": 5513,
+          "start": "DELETE acknowledged",
+          "end": "Replacement Pod's Ready condition observed True",
+          "startAt": "2026-11-17T03:15:38.868895Z",
+          "endAt": "2026-11-17T03:15:44.382655Z",
+          "description": "Includes scheduling, image pull (often cached), container start and readiness probe period."
+        },
+        {
+          "name": "time_to_desired_readiness",
+          "label": "Acknowledged → desired readiness restored",
+          "valueMs": 5513,
+          "start": "DELETE acknowledged",
+          "end": "Deployment converged at baseline desired=2 with replacement Ready",
+          "startAt": "2026-11-17T03:15:38.868895Z",
+          "endAt": "2026-11-17T03:15:44.382655Z",
+          "description": "End of the recovery as seen through Deployment status."
+        },
+        {
+          "name": "recovery_duration",
+          "label": "Readiness dip → restored",
+          "valueMs": 4783,
+          "start": "First observation of readyReplicas below the baseline (2)",
+          "end": "Desired readiness restored",
+          "startAt": "2026-11-17T03:15:39.599411Z",
+          "endAt": "2026-11-17T03:15:44.382655Z",
+          "description": "Duration ready capacity was observed below baseline. Only measured if a dip was actually observed."
+        },
+        {
+          "name": "time_to_original_absent",
+          "label": "Acknowledged → original Pod gone",
+          "valueMs": 3669,
+          "start": "DELETE acknowledged",
+          "end": "Original Pod UID no longer present in the API (watch DELETED or poll 404)",
+          "startAt": "2026-11-17T03:15:38.868895Z",
+          "endAt": "2026-11-17T03:15:42.538894Z",
+          "description": "Includes the graceful termination period. Recovery does not wait for this."
+        }
+      ],
+      "timeline": [
+        {
+          "at": "2026-11-17T03:15:38.795628Z",
+          "offsetMs": 0,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Baseline: desired=2 ready=2 available=2 (4 Pods listed)"
+        },
+        {
+          "at": "2026-11-17T03:15:38.79563Z",
+          "offsetMs": 0,
+          "kind": "inference",
+          "observed": false,
+          "message": "Expected chain: API server marks the Pod terminating → kubelet stops it → ReplicaSet controller sees too few active Pods and creates a new Pod (new UID) → scheduler binds it → kubelet starts it → readiness probe passes."
+        },
+        {
+          "at": "2026-11-17T03:15:38.795631Z",
+          "offsetMs": 0,
+          "kind": "api_request",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-zr86r",
+          "message": "DELETE pod demo-api-7767ff7fdf-zr86r (precondition uid=0b7bc348-f311-4032-8775-036413edac79)"
+        },
+        {
+          "at": "2026-11-17T03:15:38.868915Z",
+          "offsetMs": 73,
+          "kind": "api_response",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-zr86r",
+          "message": "DELETE acknowledged in 73 ms"
+        },
+        {
+          "at": "2026-11-17T03:15:39.028248Z",
+          "offsetMs": 232,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-zr86r",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:39.134335Z",
+          "offsetMs": 338,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=1 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:39.220263Z",
+          "offsetMs": 424,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "Warning Unhealthy (kubelet): Readiness probe failed: Get \"http://10.124.0.20:8080/\": dial tcp 10.124.0.20:8080: connect: connection refused"
+        },
+        {
+          "at": "2026-11-17T03:15:39.220664Z",
+          "offsetMs": 425,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-zr86r",
+          "message": "Normal Killing (kubelet): Stopping container web"
+        },
+        {
+          "at": "2026-11-17T03:15:39.220689Z",
+          "offsetMs": 425,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "Normal SuccessfulCreate (replicaset-controller): Created pod: demo-api-7767ff7fdf-z89zf"
+        },
+        {
+          "at": "2026-11-17T03:15:39.570341Z",
+          "offsetMs": 774,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-z89zf",
+          "message": "ADDED: phase=Pending ready=false (unscheduled)"
+        },
+        {
+          "at": "2026-11-17T03:15:39.570341Z",
+          "offsetMs": 774,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-z89zf",
+          "message": "Replacement Pod observed with new UID 96e7eb42-d2f5-4b25-b33d-eabae74ac2a7 (original 0b7bc348-f311-4032-8775-036413edac79)"
+        },
+        {
+          "at": "2026-11-17T03:15:39.599411Z",
+          "offsetMs": 803,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=5 observedGen=5 spec=2 current=1 updated=1 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:39.599411Z",
+          "offsetMs": 803,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Readiness dip observed: ready=1 \u003c baseline 2"
+        },
+        {
+          "at": "2026-11-17T03:15:39.893842Z",
+          "offsetMs": 1098,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-z89zf",
+          "message": "Normal Scheduled (default-scheduler): Successfully assigned kubescope-demo/demo-api-7767ff7fdf-z89zf to gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:39.893853Z",
+          "offsetMs": 1098,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-zr86r",
+          "message": "Warning Unhealthy (kubelet): Readiness probe failed: Get \"http://10.124.0.11:8080/\": dial tcp 10.124.0.11:8080: connect: connection refused"
+        },
+        {
+          "at": "2026-11-17T03:15:39.938797Z",
+          "offsetMs": 1143,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:40.085975Z",
+          "offsetMs": 1290,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-z89zf",
+          "message": "MODIFIED: phase=Pending ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:40.378939Z",
+          "offsetMs": 1583,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "Warning Unhealthy (kubelet): Readiness probe failed: Get \"http://10.124.0.21:8080/\": dial tcp 10.124.0.21:8080: connect: connection refused"
+        },
+        {
+          "at": "2026-11-17T03:15:40.527397Z",
+          "offsetMs": 1731,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=5 observedGen=5 spec=2 current=2 updated=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:41.149833Z",
+          "offsetMs": 2354,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "Warning Unhealthy (kubelet): Readiness probe failed: Get \"http://10.124.0.20:8080/\": dial tcp 10.124.0.20:8080: connect: connection refused"
+        },
+        {
+          "at": "2026-11-17T03:15:41.203974Z",
+          "offsetMs": 2408,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-z89zf",
+          "message": "Normal Pulled (kubelet): Container image \"nginxinc/nginx-unprivileged:1.27.3-alpine\" already present on machine and can be accessed by the pod"
+        },
+        {
+          "at": "2026-11-17T03:15:41.244917Z",
+          "offsetMs": 2449,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "MODIFIED: phase=Running ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:41.254516Z",
+          "offsetMs": 2458,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-zr86r",
+          "message": "MODIFIED: phase=Succeeded ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:41.396109Z",
+          "offsetMs": 2600,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "MODIFIED: phase=Succeeded ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:41.39825Z",
+          "offsetMs": 2602,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:41.398262Z",
+          "offsetMs": 2602,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "MODIFIED: phase=Succeeded ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:41.438991Z",
+          "offsetMs": 2643,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:41.442826Z",
+          "offsetMs": 2647,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-z89zf",
+          "message": "Normal Created (kubelet): Container created"
+        },
+        {
+          "at": "2026-11-17T03:15:41.448814Z",
+          "offsetMs": 2653,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=5 observedGen=5 spec=2 current=2 updated=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:41.496958Z",
+          "offsetMs": 2701,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=5 observedGen=5 spec=2 current=2 updated=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:41.63984Z",
+          "offsetMs": 2844,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-z89zf",
+          "message": "Normal Started (kubelet): Container started"
+        },
+        {
+          "at": "2026-11-17T03:15:41.666713Z",
+          "offsetMs": 2871,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-z89zf",
+          "message": "MODIFIED: phase=Running ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:42.386205Z",
+          "offsetMs": 3590,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "DELETED (object removed from the API)"
+        },
+        {
+          "at": "2026-11-17T03:15:42.538894Z",
+          "offsetMs": 3743,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-zr86r",
+          "message": "DELETED (object removed from the API)"
+        },
+        {
+          "at": "2026-11-17T03:15:42.626092Z",
+          "offsetMs": 3830,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "DELETED (object removed from the API)"
+        },
+        {
+          "at": "2026-11-17T03:15:44.382628Z",
+          "offsetMs": 5586,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=5 observedGen=5 spec=2 current=2 updated=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:44.382627Z",
+          "offsetMs": 5586,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:44.382655Z",
+          "offsetMs": 5587,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-z89zf",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:44.382655Z",
+          "offsetMs": 5587,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-z89zf",
+          "message": "Replacement Pod reports Ready (readiness probe passing)"
+        },
+        {
+          "at": "2026-11-17T03:15:44.382655Z",
+          "offsetMs": 5587,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Desired readiness restored: generation 5 observed; updated=ready=available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:44.382667Z",
+          "offsetMs": 5587,
+          "kind": "status",
+          "observed": false,
+          "message": "Experiment success: replacement Pod Ready and Deployment back to desired readiness"
+        }
+      ],
+      "caveats": [
+        "Timestamps are taken on the KubeScope host when requests return and when watch/poll observations arrive, not inside the control plane.",
+        "The replacement is identified as the first demo Pod whose UID was not present before deletion. Another actor creating Pods at the same time could confuse this.",
+        "A readiness dip shorter than the watch delivery or poll interval may not be observed.",
+        "GKE: the control plane is managed by Google; KubeScope only sees the public Kubernetes API."
+      ]
+    },
+    {
+      "id": "exp-20261117-031535-5",
+      "type": "scale",
+      "status": "success",
+      "statusReason": "Deployment converged to 2 ready/available replicas",
+      "context": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "cluster": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "isGKE": true,
+      "target": {
+        "namespace": "kubescope-demo",
+        "deployment": "demo-api",
+        "fromReplicas": 4,
+        "toReplicas": 2,
+        "minReadyObserved": 2
+      },
+      "createdAt": "2026-11-17T03:15:35.682704Z",
+      "requestStartedAt": "2026-11-17T03:15:35.752181Z",
+      "requestAcknowledgedAt": "2026-11-17T03:15:35.808606Z",
+      "convergedAt": "2026-11-17T03:15:36.978764Z",
+      "finishedAt": "2026-11-17T03:15:36.978772Z",
+      "timeoutSeconds": 120,
+      "measurements": [
+        {
+          "name": "api_rtt",
+          "label": "API request round-trip",
+          "valueMs": 56,
+          "start": "KubeScope sends the PATCH request",
+          "end": "KubeScope receives the API server's success response",
+          "startAt": "2026-11-17T03:15:35.752181Z",
+          "endAt": "2026-11-17T03:15:35.808606Z",
+          "description": "Client-observed latency of a single API call (network + authn/authz + admission + etcd write). It says nothing about workload readiness."
+        },
+        {
+          "name": "time_to_convergence",
+          "label": "Acknowledged → converged",
+          "valueMs": 1170,
+          "start": "PATCH acknowledged by the API server",
+          "end": "First observation with observedGeneration ≥ patched generation and updated = ready = available = status.replicas = desired",
+          "startAt": "2026-11-17T03:15:35.808606Z",
+          "endAt": "2026-11-17T03:15:36.978764Z",
+          "description": "Includes controller reconciliation, scheduling, image pulls, container start, readiness probes and watch/poll delivery to KubeScope. Not a pure control-plane latency."
+        },
+        {
+          "name": "end_to_end",
+          "label": "Request start → converged",
+          "valueMs": 1226,
+          "start": "KubeScope sends the PATCH request",
+          "end": "Convergence observed",
+          "startAt": "2026-11-17T03:15:35.752181Z",
+          "endAt": "2026-11-17T03:15:36.978764Z",
+          "description": "api_rtt + time_to_convergence."
+        }
+      ],
+      "timeline": [
+        {
+          "at": "2026-11-17T03:15:35.75218Z",
+          "offsetMs": 0,
+          "kind": "inference",
+          "observed": false,
+          "message": "Expected chain: API server persists spec.replicas=2 → Deployment controller resizes the ReplicaSet → ReplicaSet controller creates/deletes Pods → scheduler binds new Pods → kubelet starts containers → readiness probe passes."
+        },
+        {
+          "at": "2026-11-17T03:15:35.752181Z",
+          "offsetMs": 0,
+          "kind": "api_request",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "PATCH spec.replicas 4 → 2 (merge patch)"
+        },
+        {
+          "at": "2026-11-17T03:15:35.808612Z",
+          "offsetMs": 56,
+          "kind": "api_response",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "PATCH acknowledged in 56 ms: generation=5 resourceVersion=1794885335800815011"
+        },
+        {
+          "at": "2026-11-17T03:15:36.022759Z",
+          "offsetMs": 270,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=5 observedGen=5 spec=2 current=4 updated=4 ready=4 available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:36.028681Z",
+          "offsetMs": 276,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Normal ScalingReplicaSet (deployment-controller): Scaled down replica set demo-api-7767ff7fdf from 4 to 2"
+        },
+        {
+          "at": "2026-11-17T03:15:36.416635Z",
+          "offsetMs": 664,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=4 ready=4 available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:36.486387Z",
+          "offsetMs": 734,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "Normal SuccessfulDelete (replicaset-controller): Deleted pod: demo-api-7767ff7fdf-7rt2l"
+        },
+        {
+          "at": "2026-11-17T03:15:36.495068Z",
+          "offsetMs": 742,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:36.498707Z",
+          "offsetMs": 746,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:36.516334Z",
+          "offsetMs": 764,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "Normal SuccessfulDelete (replicaset-controller): Deleted pod: demo-api-7767ff7fdf-846dm"
+        },
+        {
+          "at": "2026-11-17T03:15:36.516525Z",
+          "offsetMs": 764,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=4 ready=4 available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:36.548921Z",
+          "offsetMs": 796,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:36.941098Z",
+          "offsetMs": 1188,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "Normal Killing (kubelet): Stopping container web"
+        },
+        {
+          "at": "2026-11-17T03:15:36.959315Z",
+          "offsetMs": 1207,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "Normal Killing (kubelet): Stopping container web"
+        },
+        {
+          "at": "2026-11-17T03:15:36.959337Z",
+          "offsetMs": 1207,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "Warning Unhealthy (kubelet): Readiness probe failed: Get \"http://10.124.0.20:8080/\": dial tcp 10.124.0.20:8080: connect: connection refused"
+        },
+        {
+          "at": "2026-11-17T03:15:36.978764Z",
+          "offsetMs": 1226,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=5 observedGen=5 spec=2 current=2 updated=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:36.978764Z",
+          "offsetMs": 1226,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Converged: generation 5 observed; updated=ready=available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:36.978772Z",
+          "offsetMs": 1226,
+          "kind": "status",
+          "observed": false,
+          "message": "Experiment success: Deployment converged to 2 ready/available replicas"
+        }
+      ],
+      "caveats": [
+        "Timestamps are taken on the KubeScope host when requests return and when watch/poll observations arrive, not inside the control plane.",
+        "Time-to-convergence includes scheduling, image pulls, container start-up and readiness probes; it is not control-plane latency.",
+        "Polling every 2s backs up the watch, so convergence can be detected up to one watch-delivery or poll interval late.",
+        "GKE: the control plane is managed by Google; KubeScope only sees the public Kubernetes API and cannot measure internal control-plane latency."
+      ]
+    },
+    {
+      "id": "exp-20261117-031529-4",
+      "type": "scale",
+      "status": "success",
+      "statusReason": "Deployment converged to 4 ready/available replicas",
+      "context": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "cluster": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "isGKE": true,
+      "target": {
+        "namespace": "kubescope-demo",
+        "deployment": "demo-api",
+        "fromReplicas": 2,
+        "toReplicas": 4,
+        "minReadyObserved": 2
+      },
+      "createdAt": "2026-11-17T03:15:29.176511Z",
+      "requestStartedAt": "2026-11-17T03:15:29.214152Z",
+      "requestAcknowledgedAt": "2026-11-17T03:15:29.270488Z",
+      "convergedAt": "2026-11-17T03:15:34.823484Z",
+      "finishedAt": "2026-11-17T03:15:34.823513Z",
+      "timeoutSeconds": 120,
+      "measurements": [
+        {
+          "name": "api_rtt",
+          "label": "API request round-trip",
+          "valueMs": 56,
+          "start": "KubeScope sends the PATCH request",
+          "end": "KubeScope receives the API server's success response",
+          "startAt": "2026-11-17T03:15:29.214152Z",
+          "endAt": "2026-11-17T03:15:29.270488Z",
+          "description": "Client-observed latency of a single API call (network + authn/authz + admission + etcd write). It says nothing about workload readiness."
+        },
+        {
+          "name": "time_to_convergence",
+          "label": "Acknowledged → converged",
+          "valueMs": 5552,
+          "start": "PATCH acknowledged by the API server",
+          "end": "First observation with observedGeneration ≥ patched generation and updated = ready = available = status.replicas = desired",
+          "startAt": "2026-11-17T03:15:29.270488Z",
+          "endAt": "2026-11-17T03:15:34.823484Z",
+          "description": "Includes controller reconciliation, scheduling, image pulls, container start, readiness probes and watch/poll delivery to KubeScope. Not a pure control-plane latency."
+        },
+        {
+          "name": "end_to_end",
+          "label": "Request start → converged",
+          "valueMs": 5609,
+          "start": "KubeScope sends the PATCH request",
+          "end": "Convergence observed",
+          "startAt": "2026-11-17T03:15:29.214152Z",
+          "endAt": "2026-11-17T03:15:34.823484Z",
+          "description": "api_rtt + time_to_convergence."
+        }
+      ],
+      "timeline": [
+        {
+          "at": "2026-11-17T03:15:29.214152Z",
+          "offsetMs": 0,
+          "kind": "inference",
+          "observed": false,
+          "message": "Expected chain: API server persists spec.replicas=4 → Deployment controller resizes the ReplicaSet → ReplicaSet controller creates/deletes Pods → scheduler binds new Pods → kubelet starts containers → readiness probe passes."
+        },
+        {
+          "at": "2026-11-17T03:15:29.214152Z",
+          "offsetMs": 0,
+          "kind": "api_request",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "PATCH spec.replicas 2 → 4 (merge patch)"
+        },
+        {
+          "at": "2026-11-17T03:15:29.270491Z",
+          "offsetMs": 56,
+          "kind": "api_response",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "PATCH acknowledged in 56 ms: generation=4 resourceVersion=1794885329262575011"
+        },
+        {
+          "at": "2026-11-17T03:15:29.330011Z",
+          "offsetMs": 115,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=4 status.replicas=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:29.336923Z",
+          "offsetMs": 122,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=4 observedGen=4 spec=4 current=2 updated=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:29.366338Z",
+          "offsetMs": 152,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Normal ScalingReplicaSet (deployment-controller): Scaled up replica set demo-api-7767ff7fdf from 2 to 4"
+        },
+        {
+          "at": "2026-11-17T03:15:29.390063Z",
+          "offsetMs": 175,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=4 observedGen=4 spec=4 current=2 updated=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:29.392584Z",
+          "offsetMs": 178,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "ADDED: phase=Pending ready=false (unscheduled)"
+        },
+        {
+          "at": "2026-11-17T03:15:29.417432Z",
+          "offsetMs": 203,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "Normal SuccessfulCreate (replicaset-controller): Created pod: demo-api-7767ff7fdf-846dm"
+        },
+        {
+          "at": "2026-11-17T03:15:29.434881Z",
+          "offsetMs": 220,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "MODIFIED: phase=Pending ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:29.45059Z",
+          "offsetMs": 236,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "ADDED: phase=Pending ready=false (unscheduled)"
+        },
+        {
+          "at": "2026-11-17T03:15:29.456374Z",
+          "offsetMs": 242,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "Normal Scheduled (default-scheduler): Successfully assigned kubescope-demo/demo-api-7767ff7fdf-846dm to gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:29.473918Z",
+          "offsetMs": 259,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "Normal SuccessfulCreate (replicaset-controller): Created pod: demo-api-7767ff7fdf-7rt2l"
+        },
+        {
+          "at": "2026-11-17T03:15:29.474161Z",
+          "offsetMs": 260,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=4 status.replicas=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:29.510395Z",
+          "offsetMs": 296,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=4 status.replicas=4 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:29.512315Z",
+          "offsetMs": 298,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "MODIFIED: phase=Pending ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:29.534735Z",
+          "offsetMs": 320,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "Normal Scheduled (default-scheduler): Successfully assigned kubescope-demo/demo-api-7767ff7fdf-7rt2l to gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:29.564701Z",
+          "offsetMs": 350,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=4 observedGen=4 spec=4 current=4 updated=4 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:30.095972Z",
+          "offsetMs": 881,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "Normal Pulled (kubelet): Container image \"nginxinc/nginx-unprivileged:1.27.3-alpine\" already present on machine and can be accessed by the pod"
+        },
+        {
+          "at": "2026-11-17T03:15:30.184902Z",
+          "offsetMs": 970,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "Normal Created (kubelet): Container created"
+        },
+        {
+          "at": "2026-11-17T03:15:30.378527Z",
+          "offsetMs": 1164,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "Normal Pulled (kubelet): Container image \"nginxinc/nginx-unprivileged:1.27.3-alpine\" already present on machine and can be accessed by the pod"
+        },
+        {
+          "at": "2026-11-17T03:15:30.460715Z",
+          "offsetMs": 1246,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "Normal Created (kubelet): Container created"
+        },
+        {
+          "at": "2026-11-17T03:15:30.623524Z",
+          "offsetMs": 1409,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "Normal Started (kubelet): Container started"
+        },
+        {
+          "at": "2026-11-17T03:15:30.654497Z",
+          "offsetMs": 1440,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "MODIFIED: phase=Running ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:30.967291Z",
+          "offsetMs": 1753,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "Normal Started (kubelet): Container started"
+        },
+        {
+          "at": "2026-11-17T03:15:30.967707Z",
+          "offsetMs": 1753,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "MODIFIED: phase=Running ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:33.015894Z",
+          "offsetMs": 3801,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=4 status.replicas=4 ready=3 available=3"
+        },
+        {
+          "at": "2026-11-17T03:15:33.015988Z",
+          "offsetMs": 3801,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-846dm",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:33.041631Z",
+          "offsetMs": 3827,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=4 observedGen=4 spec=4 current=4 updated=4 ready=3 available=3"
+        },
+        {
+          "at": "2026-11-17T03:15:34.361676Z",
+          "offsetMs": 5147,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-7rt2l",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:34.785625Z",
+          "offsetMs": 5571,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=4 status.replicas=4 ready=4 available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:34.823484Z",
+          "offsetMs": 5609,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=4 observedGen=4 spec=4 current=4 updated=4 ready=4 available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:34.823484Z",
+          "offsetMs": 5609,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Converged: generation 4 observed; updated=ready=available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:34.823515Z",
+          "offsetMs": 5609,
+          "kind": "status",
+          "observed": false,
+          "message": "Experiment success: Deployment converged to 4 ready/available replicas"
+        }
+      ],
+      "caveats": [
+        "Timestamps are taken on the KubeScope host when requests return and when watch/poll observations arrive, not inside the control plane.",
+        "Time-to-convergence includes scheduling, image pulls, container start-up and readiness probes; it is not control-plane latency.",
+        "Polling every 2s backs up the watch, so convergence can be detected up to one watch-delivery or poll interval late.",
+        "GKE: the control plane is managed by Google; KubeScope only sees the public Kubernetes API and cannot measure internal control-plane latency."
+      ]
+    },
+    {
+      "id": "exp-20261117-031513-3",
+      "type": "delete-pod",
+      "status": "success",
+      "statusReason": "replacement Pod Ready and Deployment back to desired readiness",
+      "context": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "cluster": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "isGKE": true,
+      "target": {
+        "namespace": "kubescope-demo",
+        "deployment": "demo-api",
+        "podName": "demo-api-7767ff7fdf-jz8gv",
+        "podUid": "6bee34d1-4653-4f11-b375-9b9d3f77d404",
+        "replacementPod": "demo-api-7767ff7fdf-xgpds",
+        "replacementUid": "63258dcc-3dcc-4ef3-ab62-b729dfe992f7",
+        "baselineReady": 2,
+        "baselineDesired": 2,
+        "minReadyObserved": 1
+      },
+      "createdAt": "2026-11-17T03:15:13.792699Z",
+      "requestStartedAt": "2026-11-17T03:15:14.010192Z",
+      "requestAcknowledgedAt": "2026-11-17T03:15:14.074177Z",
+      "convergedAt": "2026-11-17T03:15:22.81057Z",
+      "finishedAt": "2026-11-17T03:15:22.810603Z",
+      "timeoutSeconds": 120,
+      "measurements": [
+        {
+          "name": "api_rtt",
+          "label": "API request round-trip",
+          "valueMs": 63,
+          "start": "KubeScope sends the DELETE request",
+          "end": "KubeScope receives the API server's success response",
+          "startAt": "2026-11-17T03:15:14.010192Z",
+          "endAt": "2026-11-17T03:15:14.074177Z",
+          "description": "Client-observed latency of a single API call (network + authn/authz + admission + etcd write). It says nothing about workload readiness."
+        },
+        {
+          "name": "time_to_replacement_observed",
+          "label": "Acknowledged → replacement Pod seen",
+          "valueMs": 74,
+          "start": "DELETE acknowledged",
+          "end": "First watch observation of a Pod with a UID not present before deletion",
+          "startAt": "2026-11-17T03:15:14.074177Z",
+          "endAt": "2026-11-17T03:15:14.148386Z",
+          "description": "How long until the ReplicaSet controller's new Pod object was visible to KubeScope (not yet scheduled or running)."
+        },
+        {
+          "name": "time_to_replacement_ready",
+          "label": "Acknowledged → replacement Ready",
+          "valueMs": 8633,
+          "start": "DELETE acknowledged",
+          "end": "Replacement Pod's Ready condition observed True",
+          "startAt": "2026-11-17T03:15:14.074177Z",
+          "endAt": "2026-11-17T03:15:22.707554Z",
+          "description": "Includes scheduling, image pull (often cached), container start and readiness probe period."
+        },
+        {
+          "name": "time_to_desired_readiness",
+          "label": "Acknowledged → desired readiness restored",
+          "valueMs": 8736,
+          "start": "DELETE acknowledged",
+          "end": "Deployment converged at baseline desired=2 with replacement Ready",
+          "startAt": "2026-11-17T03:15:14.074177Z",
+          "endAt": "2026-11-17T03:15:22.81057Z",
+          "description": "End of the recovery as seen through Deployment status."
+        },
+        {
+          "name": "recovery_duration",
+          "label": "Readiness dip → restored",
+          "valueMs": 8568,
+          "start": "First observation of readyReplicas below the baseline (2)",
+          "end": "Desired readiness restored",
+          "startAt": "2026-11-17T03:15:14.241822Z",
+          "endAt": "2026-11-17T03:15:22.81057Z",
+          "description": "Duration ready capacity was observed below baseline. Only measured if a dip was actually observed."
+        },
+        {
+          "name": "time_to_original_absent",
+          "label": "Acknowledged → original Pod gone",
+          "valueMs": 5837,
+          "start": "DELETE acknowledged",
+          "end": "Original Pod UID no longer present in the API (watch DELETED or poll 404)",
+          "startAt": "2026-11-17T03:15:14.074177Z",
+          "endAt": "2026-11-17T03:15:19.91145Z",
+          "description": "Includes the graceful termination period. Recovery does not wait for this."
+        }
+      ],
+      "timeline": [
+        {
+          "at": "2026-11-17T03:15:14.010189Z",
+          "offsetMs": 0,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Baseline: desired=2 ready=2 available=2 (4 Pods listed)"
+        },
+        {
+          "at": "2026-11-17T03:15:14.010191Z",
+          "offsetMs": 0,
+          "kind": "inference",
+          "observed": false,
+          "message": "Expected chain: API server marks the Pod terminating → kubelet stops it → ReplicaSet controller sees too few active Pods and creates a new Pod (new UID) → scheduler binds it → kubelet starts it → readiness probe passes."
+        },
+        {
+          "at": "2026-11-17T03:15:14.010192Z",
+          "offsetMs": 0,
+          "kind": "api_request",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-jz8gv",
+          "message": "DELETE pod demo-api-7767ff7fdf-jz8gv (precondition uid=6bee34d1-4653-4f11-b375-9b9d3f77d404)"
+        },
+        {
+          "at": "2026-11-17T03:15:14.074187Z",
+          "offsetMs": 63,
+          "kind": "api_response",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-jz8gv",
+          "message": "DELETE acknowledged in 63 ms"
+        },
+        {
+          "at": "2026-11-17T03:15:14.086197Z",
+          "offsetMs": 76,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-jz8gv",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:14.126068Z",
+          "offsetMs": 115,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-jz8gv",
+          "message": "Normal Killing (kubelet): Stopping container web"
+        },
+        {
+          "at": "2026-11-17T03:15:14.148386Z",
+          "offsetMs": 138,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-xgpds",
+          "message": "ADDED: phase=Pending ready=false (unscheduled)"
+        },
+        {
+          "at": "2026-11-17T03:15:14.148386Z",
+          "offsetMs": 138,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-xgpds",
+          "message": "Replacement Pod observed with new UID 63258dcc-3dcc-4ef3-ab62-b729dfe992f7 (original 6bee34d1-4653-4f11-b375-9b9d3f77d404)"
+        },
+        {
+          "at": "2026-11-17T03:15:14.162251Z",
+          "offsetMs": 152,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "Normal SuccessfulCreate (replicaset-controller): Created pod: demo-api-7767ff7fdf-xgpds"
+        },
+        {
+          "at": "2026-11-17T03:15:14.172304Z",
+          "offsetMs": 162,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=1 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:14.192664Z",
+          "offsetMs": 182,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-xgpds",
+          "message": "MODIFIED: phase=Pending ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:14.232972Z",
+          "offsetMs": 222,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-xgpds",
+          "message": "Normal Scheduled (default-scheduler): Successfully assigned kubescope-demo/demo-api-7767ff7fdf-xgpds to gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:14.239935Z",
+          "offsetMs": 229,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:14.241822Z",
+          "offsetMs": 231,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=3 observedGen=3 spec=2 current=1 updated=1 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:14.241822Z",
+          "offsetMs": 231,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Readiness dip observed: ready=1 \u003c baseline 2"
+        },
+        {
+          "at": "2026-11-17T03:15:14.328398Z",
+          "offsetMs": 318,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=3 observedGen=3 spec=2 current=2 updated=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:15.364879Z",
+          "offsetMs": 1354,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "Warning Unhealthy (kubelet): Readiness probe failed: Get \"http://10.124.0.18:8080/\": dial tcp 10.124.0.18:8080: connect: connection refused"
+        },
+        {
+          "at": "2026-11-17T03:15:15.386888Z",
+          "offsetMs": 1376,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "Warning Unhealthy (kubelet): Readiness probe failed: Get \"http://10.124.0.17:8080/\": dial tcp 10.124.0.17:8080: connect: connection refused"
+        },
+        {
+          "at": "2026-11-17T03:15:15.881091Z",
+          "offsetMs": 1870,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-jz8gv",
+          "message": "Warning Unhealthy (kubelet): Readiness probe failed: Get \"http://10.124.0.6:8080/\": dial tcp 10.124.0.6:8080: connect: connection refused"
+        },
+        {
+          "at": "2026-11-17T03:15:17.450629Z",
+          "offsetMs": 3440,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "Warning Unhealthy (kubelet): Readiness probe failed: Get \"http://10.124.0.17:8080/\": dial tcp 10.124.0.17:8080: connect: connection refused"
+        },
+        {
+          "at": "2026-11-17T03:15:17.450643Z",
+          "offsetMs": 3440,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "Warning Unhealthy (kubelet): Readiness probe failed: Get \"http://10.124.0.18:8080/\": dial tcp 10.124.0.18:8080: connect: connection refused"
+        },
+        {
+          "at": "2026-11-17T03:15:17.450903Z",
+          "offsetMs": 3440,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "MODIFIED: phase=Running ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:17.45118Z",
+          "offsetMs": 3440,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "MODIFIED: phase=Running ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:17.961207Z",
+          "offsetMs": 3951,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-jz8gv",
+          "message": "Warning Unhealthy (kubelet): Readiness probe failed: Get \"http://10.124.0.6:8080/\": dial tcp 10.124.0.6:8080: connect: connection refused"
+        },
+        {
+          "at": "2026-11-17T03:15:18.349494Z",
+          "offsetMs": 4339,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-xgpds",
+          "message": "Normal Pulled (kubelet): Container image \"nginxinc/nginx-unprivileged:1.27.3-alpine\" already present on machine and can be accessed by the pod"
+        },
+        {
+          "at": "2026-11-17T03:15:18.780324Z",
+          "offsetMs": 4770,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-xgpds",
+          "message": "Normal Created (kubelet): Container created"
+        },
+        {
+          "at": "2026-11-17T03:15:18.987169Z",
+          "offsetMs": 4976,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "MODIFIED: phase=Succeeded ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:19.027698Z",
+          "offsetMs": 5017,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:19.053084Z",
+          "offsetMs": 5042,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=3 observedGen=3 spec=2 current=2 updated=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:19.226892Z",
+          "offsetMs": 5216,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "MODIFIED: phase=Succeeded ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:19.270596Z",
+          "offsetMs": 5260,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:19.310451Z",
+          "offsetMs": 5300,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=3 observedGen=3 spec=2 current=2 updated=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:19.370617Z",
+          "offsetMs": 5360,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-jz8gv",
+          "message": "MODIFIED: phase=Succeeded ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:19.388915Z",
+          "offsetMs": 5378,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-xgpds",
+          "message": "Normal Started (kubelet): Container started"
+        },
+        {
+          "at": "2026-11-17T03:15:19.410641Z",
+          "offsetMs": 5400,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:19.454062Z",
+          "offsetMs": 5443,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=3 observedGen=3 spec=2 current=2 updated=2 ready=1 available=1"
+        },
+        {
+          "at": "2026-11-17T03:15:19.504172Z",
+          "offsetMs": 5493,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-xgpds",
+          "message": "MODIFIED: phase=Running ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:19.91145Z",
+          "offsetMs": 5901,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-jz8gv",
+          "message": "DELETED (object removed from the API)"
+        },
+        {
+          "at": "2026-11-17T03:15:20.062725Z",
+          "offsetMs": 6052,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "DELETED (object removed from the API)"
+        },
+        {
+          "at": "2026-11-17T03:15:20.125158Z",
+          "offsetMs": 6114,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "DELETED (object removed from the API)"
+        },
+        {
+          "at": "2026-11-17T03:15:22.707554Z",
+          "offsetMs": 8697,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-xgpds",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:22.707554Z",
+          "offsetMs": 8697,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-xgpds",
+          "message": "Replacement Pod reports Ready (readiness probe passing)"
+        },
+        {
+          "at": "2026-11-17T03:15:22.752457Z",
+          "offsetMs": 8742,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:22.81057Z",
+          "offsetMs": 8800,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=3 observedGen=3 spec=2 current=2 updated=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:22.81057Z",
+          "offsetMs": 8800,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Desired readiness restored: generation 3 observed; updated=ready=available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:22.810605Z",
+          "offsetMs": 8800,
+          "kind": "status",
+          "observed": false,
+          "message": "Experiment success: replacement Pod Ready and Deployment back to desired readiness"
+        }
+      ],
+      "caveats": [
+        "Timestamps are taken on the KubeScope host when requests return and when watch/poll observations arrive, not inside the control plane.",
+        "The replacement is identified as the first demo Pod whose UID was not present before deletion. Another actor creating Pods at the same time could confuse this.",
+        "A readiness dip shorter than the watch delivery or poll interval may not be observed.",
+        "GKE: the control plane is managed by Google; KubeScope only sees the public Kubernetes API."
+      ]
+    },
+    {
+      "id": "exp-20261117-031512-2",
+      "type": "scale",
+      "status": "success",
+      "statusReason": "Deployment converged to 2 ready/available replicas",
+      "context": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "cluster": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "isGKE": true,
+      "target": {
+        "namespace": "kubescope-demo",
+        "deployment": "demo-api",
+        "fromReplicas": 4,
+        "toReplicas": 2,
+        "minReadyObserved": 2
+      },
+      "createdAt": "2026-11-17T03:15:12.308232Z",
+      "requestStartedAt": "2026-11-17T03:15:12.350024Z",
+      "requestAcknowledgedAt": "2026-11-17T03:15:12.455124Z",
+      "convergedAt": "2026-11-17T03:15:12.730486Z",
+      "finishedAt": "2026-11-17T03:15:12.730507Z",
+      "timeoutSeconds": 120,
+      "measurements": [
+        {
+          "name": "api_rtt",
+          "label": "API request round-trip",
+          "valueMs": 105,
+          "start": "KubeScope sends the PATCH request",
+          "end": "KubeScope receives the API server's success response",
+          "startAt": "2026-11-17T03:15:12.350024Z",
+          "endAt": "2026-11-17T03:15:12.455124Z",
+          "description": "Client-observed latency of a single API call (network + authn/authz + admission + etcd write). It says nothing about workload readiness."
+        },
+        {
+          "name": "time_to_convergence",
+          "label": "Acknowledged → converged",
+          "valueMs": 275,
+          "start": "PATCH acknowledged by the API server",
+          "end": "First observation with observedGeneration ≥ patched generation and updated = ready = available = status.replicas = desired",
+          "startAt": "2026-11-17T03:15:12.455124Z",
+          "endAt": "2026-11-17T03:15:12.730486Z",
+          "description": "Includes controller reconciliation, scheduling, image pulls, container start, readiness probes and watch/poll delivery to KubeScope. Not a pure control-plane latency."
+        },
+        {
+          "name": "end_to_end",
+          "label": "Request start → converged",
+          "valueMs": 380,
+          "start": "KubeScope sends the PATCH request",
+          "end": "Convergence observed",
+          "startAt": "2026-11-17T03:15:12.350024Z",
+          "endAt": "2026-11-17T03:15:12.730486Z",
+          "description": "api_rtt + time_to_convergence."
+        }
+      ],
+      "timeline": [
+        {
+          "at": "2026-11-17T03:15:12.350023Z",
+          "offsetMs": 0,
+          "kind": "inference",
+          "observed": false,
+          "message": "Expected chain: API server persists spec.replicas=2 → Deployment controller resizes the ReplicaSet → ReplicaSet controller creates/deletes Pods → scheduler binds new Pods → kubelet starts containers → readiness probe passes."
+        },
+        {
+          "at": "2026-11-17T03:15:12.350024Z",
+          "offsetMs": 0,
+          "kind": "api_request",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "PATCH spec.replicas 4 → 2 (merge patch)"
+        },
+        {
+          "at": "2026-11-17T03:15:12.455128Z",
+          "offsetMs": 105,
+          "kind": "api_response",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "PATCH acknowledged in 105 ms: generation=3 resourceVersion=1794885312444671011"
+        },
+        {
+          "at": "2026-11-17T03:15:12.54797Z",
+          "offsetMs": 197,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=4 ready=4 available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:12.582428Z",
+          "offsetMs": 232,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Normal ScalingReplicaSet (deployment-controller): Scaled down replica set demo-api-7767ff7fdf from 4 to 2"
+        },
+        {
+          "at": "2026-11-17T03:15:12.598419Z",
+          "offsetMs": 248,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=3 observedGen=3 spec=2 current=4 updated=4 ready=4 available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:12.616867Z",
+          "offsetMs": 266,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:12.619606Z",
+          "offsetMs": 269,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74 terminating"
+        },
+        {
+          "at": "2026-11-17T03:15:12.64001Z",
+          "offsetMs": 289,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=4 ready=4 available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:12.648249Z",
+          "offsetMs": 298,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "Normal SuccessfulDelete (replicaset-controller): Deleted pod: demo-api-7767ff7fdf-kchs4"
+        },
+        {
+          "at": "2026-11-17T03:15:12.673371Z",
+          "offsetMs": 323,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "Normal SuccessfulDelete (replicaset-controller): Deleted pod: demo-api-7767ff7fdf-bb6nb"
+        },
+        {
+          "at": "2026-11-17T03:15:12.673419Z",
+          "offsetMs": 323,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "Normal Killing (kubelet): Stopping container web"
+        },
+        {
+          "at": "2026-11-17T03:15:12.68595Z",
+          "offsetMs": 335,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=2 status.replicas=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:12.712686Z",
+          "offsetMs": 362,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "Normal Killing (kubelet): Stopping container web"
+        },
+        {
+          "at": "2026-11-17T03:15:12.730486Z",
+          "offsetMs": 380,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=3 observedGen=3 spec=2 current=2 updated=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:12.730486Z",
+          "offsetMs": 380,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Converged: generation 3 observed; updated=ready=available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:12.730509Z",
+          "offsetMs": 380,
+          "kind": "status",
+          "observed": false,
+          "message": "Experiment success: Deployment converged to 2 ready/available replicas"
+        }
+      ],
+      "caveats": [
+        "Timestamps are taken on the KubeScope host when requests return and when watch/poll observations arrive, not inside the control plane.",
+        "Time-to-convergence includes scheduling, image pulls, container start-up and readiness probes; it is not control-plane latency.",
+        "Polling every 2s backs up the watch, so convergence can be detected up to one watch-delivery or poll interval late.",
+        "GKE: the control plane is managed by Google; KubeScope only sees the public Kubernetes API and cannot measure internal control-plane latency."
+      ]
+    },
+    {
+      "id": "exp-20261117-031506-1",
+      "type": "scale",
+      "status": "success",
+      "statusReason": "Deployment converged to 4 ready/available replicas",
+      "context": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "cluster": "gke_kubescope-lab_us-central1-a_kubescope-lab",
+      "isGKE": true,
+      "target": {
+        "namespace": "kubescope-demo",
+        "deployment": "demo-api",
+        "fromReplicas": 2,
+        "toReplicas": 4,
+        "minReadyObserved": 2
+      },
+      "createdAt": "2026-11-17T03:15:06.826575Z",
+      "requestStartedAt": "2026-11-17T03:15:06.868152Z",
+      "requestAcknowledgedAt": "2026-11-17T03:15:06.9543Z",
+      "convergedAt": "2026-11-17T03:15:11.548971Z",
+      "finishedAt": "2026-11-17T03:15:11.549002Z",
+      "timeoutSeconds": 120,
+      "measurements": [
+        {
+          "name": "api_rtt",
+          "label": "API request round-trip",
+          "valueMs": 86,
+          "start": "KubeScope sends the PATCH request",
+          "end": "KubeScope receives the API server's success response",
+          "startAt": "2026-11-17T03:15:06.868152Z",
+          "endAt": "2026-11-17T03:15:06.9543Z",
+          "description": "Client-observed latency of a single API call (network + authn/authz + admission + etcd write). It says nothing about workload readiness."
+        },
+        {
+          "name": "time_to_convergence",
+          "label": "Acknowledged → converged",
+          "valueMs": 4594,
+          "start": "PATCH acknowledged by the API server",
+          "end": "First observation with observedGeneration ≥ patched generation and updated = ready = available = status.replicas = desired",
+          "startAt": "2026-11-17T03:15:06.9543Z",
+          "endAt": "2026-11-17T03:15:11.548971Z",
+          "description": "Includes controller reconciliation, scheduling, image pulls, container start, readiness probes and watch/poll delivery to KubeScope. Not a pure control-plane latency."
+        },
+        {
+          "name": "end_to_end",
+          "label": "Request start → converged",
+          "valueMs": 4680,
+          "start": "KubeScope sends the PATCH request",
+          "end": "Convergence observed",
+          "startAt": "2026-11-17T03:15:06.868152Z",
+          "endAt": "2026-11-17T03:15:11.548971Z",
+          "description": "api_rtt + time_to_convergence."
+        }
+      ],
+      "timeline": [
+        {
+          "at": "2026-11-17T03:15:06.868151Z",
+          "offsetMs": 0,
+          "kind": "inference",
+          "observed": false,
+          "message": "Expected chain: API server persists spec.replicas=4 → Deployment controller resizes the ReplicaSet → ReplicaSet controller creates/deletes Pods → scheduler binds new Pods → kubelet starts containers → readiness probe passes."
+        },
+        {
+          "at": "2026-11-17T03:15:06.868152Z",
+          "offsetMs": 0,
+          "kind": "api_request",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "PATCH spec.replicas 2 → 4 (merge patch)"
+        },
+        {
+          "at": "2026-11-17T03:15:06.954305Z",
+          "offsetMs": 86,
+          "kind": "api_response",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "PATCH acknowledged in 86 ms: generation=2 resourceVersion=1794885306944431011"
+        },
+        {
+          "at": "2026-11-17T03:15:07.007867Z",
+          "offsetMs": 139,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=4 status.replicas=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:07.024392Z",
+          "offsetMs": 156,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=2 observedGen=2 spec=4 current=2 updated=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:07.078556Z",
+          "offsetMs": 210,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=2 observedGen=2 spec=4 current=2 updated=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:07.084437Z",
+          "offsetMs": 216,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "ADDED: phase=Pending ready=false (unscheduled)"
+        },
+        {
+          "at": "2026-11-17T03:15:07.10241Z",
+          "offsetMs": 234,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Normal ScalingReplicaSet (deployment-controller): Scaled up replica set demo-api-7767ff7fdf from 2 to 4"
+        },
+        {
+          "at": "2026-11-17T03:15:07.1403Z",
+          "offsetMs": 272,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "Normal SuccessfulCreate (replicaset-controller): Created pod: demo-api-7767ff7fdf-bb6nb"
+        },
+        {
+          "at": "2026-11-17T03:15:07.148522Z",
+          "offsetMs": 280,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "MODIFIED: phase=Pending ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:07.152177Z",
+          "offsetMs": 284,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "Normal Scheduled (default-scheduler): Successfully assigned kubescope-demo/demo-api-7767ff7fdf-bb6nb to gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:07.167251Z",
+          "offsetMs": 299,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "ADDED: phase=Pending ready=false (unscheduled)"
+        },
+        {
+          "at": "2026-11-17T03:15:07.204857Z",
+          "offsetMs": 336,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "MODIFIED: phase=Pending ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:07.286165Z",
+          "offsetMs": 418,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "Normal SuccessfulCreate (replicaset-controller): Created pod: demo-api-7767ff7fdf-kchs4"
+        },
+        {
+          "at": "2026-11-17T03:15:07.294459Z",
+          "offsetMs": 426,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=4 status.replicas=2 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:07.299479Z",
+          "offsetMs": 431,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "Normal Scheduled (default-scheduler): Successfully assigned kubescope-demo/demo-api-7767ff7fdf-kchs4 to gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:07.326675Z",
+          "offsetMs": 458,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=4 status.replicas=4 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:07.357481Z",
+          "offsetMs": 489,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=2 observedGen=2 spec=4 current=4 updated=4 ready=2 available=2"
+        },
+        {
+          "at": "2026-11-17T03:15:07.918894Z",
+          "offsetMs": 1050,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "Normal Pulled (kubelet): Container image \"nginxinc/nginx-unprivileged:1.27.3-alpine\" already present on machine and can be accessed by the pod"
+        },
+        {
+          "at": "2026-11-17T03:15:07.970586Z",
+          "offsetMs": 1102,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "Normal Pulled (kubelet): Container image \"nginxinc/nginx-unprivileged:1.27.3-alpine\" already present on machine and can be accessed by the pod"
+        },
+        {
+          "at": "2026-11-17T03:15:08.030731Z",
+          "offsetMs": 1162,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "Normal Created (kubelet): Container created"
+        },
+        {
+          "at": "2026-11-17T03:15:08.07822Z",
+          "offsetMs": 1210,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "Normal Created (kubelet): Container created"
+        },
+        {
+          "at": "2026-11-17T03:15:08.417677Z",
+          "offsetMs": 1549,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "Normal Started (kubelet): Container started"
+        },
+        {
+          "at": "2026-11-17T03:15:08.437047Z",
+          "offsetMs": 1568,
+          "kind": "k8s_event",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "Normal Started (kubelet): Container started"
+        },
+        {
+          "at": "2026-11-17T03:15:08.487288Z",
+          "offsetMs": 1619,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "MODIFIED: phase=Running ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:08.734746Z",
+          "offsetMs": 1866,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "MODIFIED: phase=Running ready=false node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:11.40905Z",
+          "offsetMs": 4540,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-bb6nb",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:11.432627Z",
+          "offsetMs": 4564,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=4 status.replicas=4 ready=3 available=3"
+        },
+        {
+          "at": "2026-11-17T03:15:11.454862Z",
+          "offsetMs": 4586,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Pod/demo-api-7767ff7fdf-kchs4",
+          "message": "MODIFIED: phase=Running ready=true node=gke-kubescope-lab-default-pool-3882947c-2v74"
+        },
+        {
+          "at": "2026-11-17T03:15:11.481028Z",
+          "offsetMs": 4612,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=2 observedGen=2 spec=4 current=4 updated=4 ready=3 available=3"
+        },
+        {
+          "at": "2026-11-17T03:15:11.500458Z",
+          "offsetMs": 4632,
+          "kind": "watch",
+          "observed": true,
+          "resource": "ReplicaSet/demo-api-7767ff7fdf",
+          "message": "MODIFIED: spec.replicas=4 status.replicas=4 ready=4 available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:11.548971Z",
+          "offsetMs": 4680,
+          "kind": "watch",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "gen=2 observedGen=2 spec=4 current=4 updated=4 ready=4 available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:11.548971Z",
+          "offsetMs": 4680,
+          "kind": "observation",
+          "observed": true,
+          "resource": "Deployment/demo-api",
+          "message": "Converged: generation 2 observed; updated=ready=available=4"
+        },
+        {
+          "at": "2026-11-17T03:15:11.549004Z",
+          "offsetMs": 4680,
+          "kind": "status",
+          "observed": false,
+          "message": "Experiment success: Deployment converged to 4 ready/available replicas"
+        }
+      ],
+      "caveats": [
+        "Timestamps are taken on the KubeScope host when requests return and when watch/poll observations arrive, not inside the control plane.",
+        "Time-to-convergence includes scheduling, image pulls, container start-up and readiness probes; it is not control-plane latency.",
+        "Polling every 2s backs up the watch, so convergence can be detected up to one watch-delivery or poll interval late.",
+        "GKE: the control plane is managed by Google; KubeScope only sees the public Kubernetes API and cannot measure internal control-plane latency."
+      ]
+    }
+  ],
+  "exportedAt": "2026-11-17T03:15:45.359657Z",
+  "format": "kubescope-experiments/v1",
+  "notes": [
+    "All timestamps are UTC and taken on the KubeScope host, not inside the Kubernetes control plane.",
+    "Durations with valueMs=null were not observed; see each measurement's reason.",
+    "time_to_convergence / recovery figures include scheduling, image pulls, container start and readiness probes; they are not control-plane latency."
+  ]
+}

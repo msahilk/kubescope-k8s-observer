@@ -5,9 +5,9 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/sahilkamil/kubescope/backend/internal/kube"
-	"github.com/sahilkamil/kubescope/backend/internal/models"
-	"github.com/sahilkamil/kubescope/backend/internal/stream"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/kube"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/models"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/stream"
 )
 
 // ResourcePublisher converts watch observations into SSE events. Only objects

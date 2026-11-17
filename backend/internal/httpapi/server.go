@@ -19,12 +19,12 @@ import (
 	"golang.org/x/time/rate"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 
-	"github.com/sahilkamil/kubescope/backend/internal/config"
-	"github.com/sahilkamil/kubescope/backend/internal/experiments"
-	"github.com/sahilkamil/kubescope/backend/internal/kube"
-	"github.com/sahilkamil/kubescope/backend/internal/models"
-	"github.com/sahilkamil/kubescope/backend/internal/safety"
-	"github.com/sahilkamil/kubescope/backend/internal/stream"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/config"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/experiments"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/kube"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/models"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/safety"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/stream"
 )
 
 // Server holds the HTTP handlers' dependencies.

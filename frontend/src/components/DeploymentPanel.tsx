@@ -71,11 +71,11 @@ export function DeploymentPanel({ snapshot, error, loading, canMutate, onDeleteP
               <tr>
                 <th scope="col">Name</th>
                 <th scope="col">UID</th>
-                <th scope="col">Phase</th>
-                <th scope="col">Running</th>
                 <th scope="col">Ready</th>
-                <th scope="col">Node</th>
-                <th scope="col"><span className="sr-only">Actions</span></th>
+                <th scope="col">Running</th>
+                <th scope="col">Phase</th>
+                <th scope="col" className="col-node">Node</th>
+                <th scope="col" className="col-action"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody>
@@ -83,11 +83,11 @@ export function DeploymentPanel({ snapshot, error, loading, canMutate, onDeleteP
                 <tr key={p.uid} className={p.terminating ? 'terminating' : ''}>
                   <td><code title={p.name}>{shortPod(p.name, d?.name)}</code></td>
                   <td><code title={p.uid}>{shortUid(p.uid)}</code></td>
-                  <td>{p.terminating ? 'Terminating' : p.phase}{p.reason ? ` (${p.reason})` : ''}</td>
-                  <td>{p.running ? 'yes' : 'no'}</td>
                   <td><span className={`badge ${p.ready ? 'ok' : 'warn'}`}>{p.ready ? 'Ready' : 'Not ready'}</span></td>
-                  <td>{p.nodeName || <span className="muted">unscheduled</span>}</td>
-                  <td>
+                  <td>{p.running ? 'yes' : 'no'}</td>
+                  <td>{p.terminating ? 'Terminating' : p.phase}{p.reason ? ` (${p.reason})` : ''}</td>
+                  <td className="col-node" title={p.nodeName || undefined}>{p.nodeName || <span className="muted">unscheduled</span>}</td>
+                  <td className="col-action">
                     <button className="btn danger small" disabled={!canMutate || p.terminating} onClick={() => onDeletePod(p.name, p.uid)}>
                       Delete…
                     </button>

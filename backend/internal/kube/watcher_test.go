@@ -11,7 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes/fake"
 
-	"github.com/sahilkamil/kubescope/backend/internal/config"
+	"github.com/msahilk/kubescope-k8s-observer/backend/internal/config"
 )
 
 type recorder struct {
